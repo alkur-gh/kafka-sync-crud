@@ -43,3 +43,5 @@ bin/
 
 #general
 *.class
+
+src/main/resources/secret
