@@ -81,7 +81,11 @@ class UserDaoElasticsearchImpl(client: ElasticClient)(implicit ec: ExecutionCont
   override def readByQuery(query: String): Future[DaoResponse] = {
     client
       .execute {
-        search(INDEX_NAME).query(query)
+        if (query.isBlank) {
+          search(INDEX_NAME).matchAllQuery()
+        } else {
+          search(INDEX_NAME).query(query)
+        }
       }
       .map {
         case RequestSuccess(StatusCodes.OK.intValue, _, _, result) =>
