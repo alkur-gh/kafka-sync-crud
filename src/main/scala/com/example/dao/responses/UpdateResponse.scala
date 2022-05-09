@@ -1,4 +1,4 @@
-package com.example.dao.response
+package com.example.dao.responses
 
 trait UpdateResponse extends DaoResponse
 

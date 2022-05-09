@@ -15,10 +15,12 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion,
   "com.typesafe.akka" %% "akka-stream-kafka" % AkkaKafkaVersion,
   "org.json4s" %% "json4s-jackson" % Json4sVersion,
+  "org.json4s" %% "json4s-ext" % Json4sVersion,
   "de.heikoseeberger" %% "akka-http-json4s" % AkkaHttpJsonVersion,
   "com.lightbend.akka" %% "akka-stream-alpakka-elasticsearch" % AkkaElasticsearchVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-client-akka" % Elastic4sVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-json-json4s" % Elastic4sVersion,
   "com.typesafe.akka" %% "akka-slf4j" % AkkaVersion,
   "ch.qos.logback" % "logback-classic" % "1.2.11",
+  "org.codehaus.janino" % "janino" % "3.1.7"
 )

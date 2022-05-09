@@ -1,6 +1,6 @@
 package com.example.dao
 
-import com.example.dao.response.DaoResponse
+import com.example.dao.responses.DaoResponse
 import com.example.model.User
 
 import scala.concurrent.Future

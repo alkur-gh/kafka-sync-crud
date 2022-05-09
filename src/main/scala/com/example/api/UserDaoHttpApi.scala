@@ -1,11 +1,11 @@
 package com.example.api
 
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.example.dao.UserDao
+import com.example.dao.responses._
 import com.example.model.User
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.model._
-import com.example.dao.response.{CommonResponses, CreateResponse, DeleteResponse, ReadResponse, UpdateResponse}
 import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 import org.json4s._
 
@@ -19,7 +19,7 @@ object UserDaoHttpApi {
         concat(
           (get & parameter("q".withDefault(""))) { q =>
             onSuccess(dao.readByQuery(q)) {
-              case ReadResponse.MultipleUser(users) =>
+              case ReadResponse.MultipleUsers(users) =>
                 complete(StatusCodes.OK, users)
             }
           },

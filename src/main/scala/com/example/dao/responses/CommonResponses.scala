@@ -1,4 +1,4 @@
-package com.example.dao.response
+package com.example.dao.responses
 
 object CommonResponses {
   case object UserNotFound extends DaoResponse

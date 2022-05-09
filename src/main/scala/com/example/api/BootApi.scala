@@ -3,18 +3,40 @@ package com.example.api
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives.pathPrefix
-import com.example.dao.{UserDao, UserDaoElasticsearchImpl}
-import com.sksamuel.elastic4s.ElasticClient
-import com.sksamuel.elastic4s.akka.{AkkaHttpClient, AkkaHttpClientSettings}
+import akka.kafka.{ConsumerSettings, ProducerSettings}
+import com.example.dao.UserDaoKafkaPacketImpl
+import com.example.kafkapacket.{KafkaPacketClient, KafkaPacketConsumer, KafkaPacketListener, KafkaPacketProducer}
 import com.typesafe.config.{Config, ConfigFactory}
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 
 object BootApi extends App {
-  val config: Config = ConfigFactory.load()
-  implicit val system: ActorSystem = ActorSystem("api")
+  implicit val system: ActorSystem = ActorSystem("my-system")
+
   import system.dispatcher
 
-  val client = ElasticClient(AkkaHttpClient(AkkaHttpClientSettings(config.getConfig("elasticsearch"))))
-  val dao: UserDao = new UserDaoElasticsearchImpl(client)
+  val config: Config = ConfigFactory.load()
+
+  private val kafkaProducerSettings = ProducerSettings(system, new StringSerializer, new StringSerializer)
+    .withBootstrapServers("localhost:9092")
+  private val kafkaProducer = kafkaProducerSettings.createKafkaProducer()
+  private val kafkaProducerTopic = "users.requests"
+
+  private val kafkaConsumerSettings = ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
+    .withBootstrapServers("localhost:9092")
+    .withGroupId("kafka-listener")
+    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+  private val kafkaConsumerTopic = "users.responses"
+
+  val kafkaPacketProducer = new KafkaPacketProducer(kafkaProducer, kafkaProducerTopic)
+  val listenerActor = system.actorOf(KafkaPacketListener.props(), "api-packet-listener")
+  val clientActor = system.actorOf(KafkaPacketClient.props(kafkaPacketProducer, listenerActor), "api-packet-client")
+
+  val control = KafkaPacketConsumer.consumeToHandler(kafkaConsumerSettings, kafkaConsumerTopic) { packet =>
+    listenerActor ! packet
+  }
+
+  val dao = new UserDaoKafkaPacketImpl(clientActor)
 
   val route = pathPrefix("users")(UserDaoHttpApi.route(dao))
   val `interface` = config.getString("com.example.api.http.interface")
@@ -31,8 +53,10 @@ object BootApi extends App {
 
   println("Press `Enter` to shutdown...")
   scala.io.StdIn.readLine()
-
-  system.terminate()
+  println("Shutting down...")
+  kafkaProducer.close()
+  control.drainAndShutdown()
+    .map { _ =>
+      system.terminate()
+    }
 }
-
-

@@ -1,12 +1,12 @@
 package com.example.dao
 
 import akka.http.scaladsl.model.StatusCodes
-import com.example.dao.response.{CommonResponses, CreateResponse, DaoResponse, DeleteResponse, ReadResponse, UpdateResponse}
+import com.example.dao.responses._
 import com.example.model.User
 import com.sksamuel.elastic4s.{ElasticClient, RequestFailure, RequestSuccess}
-import org.slf4j.{Logger, LoggerFactory}
 import org.json4s._
 import org.json4s.jackson.Serialization
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -91,7 +91,7 @@ class UserDaoElasticsearchImpl(client: ElasticClient)(implicit ec: ExecutionCont
         case RequestSuccess(StatusCodes.OK.intValue, _, _, result) =>
           val users = result.hits.hits
             .map(h => User.from(h.sourceAsMap).get.copy(id = Some(h.id)))
-          ReadResponse.MultipleUser(users)
+          ReadResponse.MultipleUsers(users)
       }
       .recover(defaultRecover)
   }

@@ -1,7 +1,7 @@
 package com.example.model
 
-import org.json4s.{DefaultFormats, Extraction, JObject, Serialization}
 import org.json4s.jackson.Serialization
+import org.json4s.{DefaultFormats, Extraction, JObject, Serialization}
 
 import scala.util.Try
 
