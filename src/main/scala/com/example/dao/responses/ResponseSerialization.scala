@@ -68,5 +68,4 @@ object ResponseSerialization {
 //      case t if CommonResponses.UnknownError.toString.equals(t) => Serialization.read[CommonResponses.UnknownError](body)
 //    }
   }
-
 }

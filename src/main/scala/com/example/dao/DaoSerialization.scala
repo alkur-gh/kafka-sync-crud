@@ -5,6 +5,9 @@ import org.json4s.jackson.Serialization
 
 import scala.util.Try
 
+/**
+ * Not used, tried some magic but failed.
+ */
 abstract class DaoSerialization[T <: AnyRef] {
   case class Wrapper(contentType: String, content: String)
 
@@ -35,15 +38,5 @@ abstract class DaoSerialization[T <: AnyRef] {
       .collectFirst { case Some(v) => v }
       .head
 //      .getOrElse(optionBackup(wrapper.contentType, wrapper.content))
-    //    responseType match {
-    //      case t if CreateResponse.Created.toString.equals(t) => Serialization.read[CreateResponse.Created](body)
-    //      case t if CreateResponse.Conflict.toString.equals(t) => Serialization.read[CreateResponse.Conflict.type](body)
-    //      case t if ReadResponse.SingleUser.toString.equals(t) => Serialization.read[ReadResponse.SingleUser](body)
-    //      case t if ReadResponse.MultipleUsers.toString.equals(t) => Serialization.read[ReadResponse.MultipleUsers](body)
-    //      case t if UpdateResponse.Updated.toString.equals(t) => Serialization.read[UpdateResponse.Updated.type](body)
-    //      case t if DeleteResponse.Deleted.toString.equals(t) => Serialization.read[DeleteResponse.Deleted.type](body)
-    //      case t if CommonResponses.UserNotFound.toString.equals(t) => Serialization.read[CommonResponses.UserNotFound.type](body)
-    //      case t if CommonResponses.UnknownError.toString.equals(t) => Serialization.read[CommonResponses.UnknownError](body)
-    //    }
   }
 }

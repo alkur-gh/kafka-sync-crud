@@ -6,13 +6,38 @@
 - api должен принимать CRUD запросы по Пользователям
 - Запросы синхронные
 
+## Running
+- Run `com.example.api.BootApiServer`
+- Run `com.example.core.BootCoreServer`
+
+Note: The system may need some time to bootstrap such that initial requests may fail with status `500`.
+
+## Configuration requirements
+- Add `elasticsearch-creds.conf` to `/src/main/resources/secret` directory
+
+```yaml
+elasticsearch {
+  hosts = ["{ES_HOST}:{ES_PORT}"]
+  https = true
+  username = "{ES_USERNAME}"
+  password = "{ES_PASSWORD}"
+}
+```
+
+- Kafka broker must be available on `localhost:9092`
+
+- HTTP API will listen on port `8080`
+
+Note: Kafka configuration is hardcoded in boot files, 
+so don't forget to change them in both files.
+
 ## Architecture
 ![Architecture][arch_image]
 
 ## HTTP API
 ### Data format
 Some endpoints require JSON formatted user data.
-Currently, `Id` field is created from `name` in `POST` and ignored in `PUT`.
+Currently, `id` field is created from `name` in `POST` and ignored in `PUT`.
 ```
 {"name": "John Doe"}
 ```

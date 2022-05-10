@@ -6,9 +6,3 @@ object PacketTypes extends Enumeration {
   type PacketType = Value
   val Request, Response = Value
 }
-
-trait Payload
-
-
-
-

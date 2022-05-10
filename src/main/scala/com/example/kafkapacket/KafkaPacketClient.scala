@@ -22,7 +22,7 @@ class KafkaPacketClient(val kafkaPacketProducer: KafkaPacketProducer, packetList
         waitingForResponse(packet.id) ! Response(packet)
         context.become(active(waitingForResponse - packet.id))
       } else {
-        log.warning(s"Got foster packet from listener: $packet")
+        log.warning(s"Foster packet from listener: $packet")
       }
       packetListener ! KafkaPacketListener.Unsubscribe(packet.id)
   }

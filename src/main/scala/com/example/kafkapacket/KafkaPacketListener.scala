@@ -33,5 +33,3 @@ object KafkaPacketListener {
   case class Unsubscribe(packetId: String)
   case class Notification(packet: KafkaPacket)
 }
-
-

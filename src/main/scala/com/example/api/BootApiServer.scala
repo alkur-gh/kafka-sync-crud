@@ -10,7 +10,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 
-object BootApi extends App {
+object BootApiServer extends App {
   implicit val system: ActorSystem = ActorSystem("my-system")
 
   import system.dispatcher
