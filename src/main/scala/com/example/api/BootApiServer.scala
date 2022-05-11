@@ -17,16 +17,16 @@ object BootApiServer extends App {
 
   val config: Config = ConfigFactory.load()
 
-  private val kafkaProducerSettings = ProducerSettings(system, new StringSerializer, new StringSerializer)
-    .withBootstrapServers("localhost:9092")
-  private val kafkaProducer = kafkaProducerSettings.createKafkaProducer()
-  private val kafkaProducerTopic = "users.requests"
+  val kafkaProducerSettings = ProducerSettings(system, new StringSerializer, new StringSerializer)
+    .withBootstrapServers(config.getString("kafka.bootstrap.servers"))
+  val kafkaProducer = kafkaProducerSettings.createKafkaProducer()
+  val kafkaProducerTopic = config.getString("kafka.api.produce.topic")
 
-  private val kafkaConsumerSettings = ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
-    .withBootstrapServers("localhost:9092")
-    .withGroupId("kafka-listener")
+  val kafkaConsumerSettings = ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
+    .withBootstrapServers(config.getString("kafka.bootstrap.servers"))
+    .withGroupId(config.getString("kafka.api.consume.group.id"))
     .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
-  private val kafkaConsumerTopic = "users.responses"
+  val kafkaConsumerTopic = config.getString("kafka.api.consume.topic")
 
   val kafkaPacketProducer = new KafkaPacketProducer(kafkaProducer, kafkaProducerTopic)
   val listenerActor = system.actorOf(KafkaPacketListener.props(), "api-packet-listener")

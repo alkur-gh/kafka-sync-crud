@@ -17,17 +17,16 @@ object BootCoreServer extends App {
 
   val config: Config = ConfigFactory.load()
 
-  private val kafkaProducerSettings = ProducerSettings(system, new StringSerializer, new StringSerializer)
-    .withBootstrapServers("localhost:9092")
-  private val kafkaProducer = kafkaProducerSettings.createKafkaProducer()
-  private val kafkaProducerTopic = "users.responses"
+  val kafkaProducerSettings = ProducerSettings(system, new StringSerializer, new StringSerializer)
+    .withBootstrapServers(config.getString("kafka.bootstrap.servers"))
+  val kafkaProducer = kafkaProducerSettings.createKafkaProducer()
+  val kafkaProducerTopic = config.getString("kafka.core.produce.topic")
 
-  private val kafkaConsumerSettings: ConsumerSettings[String, String] = ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
-    .withBootstrapServers("localhost:9092")
-    .withGroupId("kafka-server-consumer")
+  val kafkaConsumerSettings: ConsumerSettings[String, String] = ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
+    .withBootstrapServers(config.getString("kafka.bootstrap.servers"))
+    .withGroupId("kafka.core.consume.group.id")
     .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
-
-  private val kafkaConsumerTopic = "users.requests"
+  val kafkaConsumerTopic = config.getString("kafka.core.consume.topic")
 
   val client = ElasticClient(AkkaHttpClient(AkkaHttpClientSettings(config.getConfig("elasticsearch"))))
   val userDao = new UserDaoElasticsearchImpl(client)

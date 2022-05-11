@@ -28,9 +28,6 @@ elasticsearch {
 
 - HTTP API will listen on port `8080`
 
-Note: Kafka configuration is hardcoded in boot files, 
-so don't forget to change them in both files.
-
 ## Architecture
 ![Architecture][arch_image]
 
